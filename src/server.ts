@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { Pool } from "pg";
 import dotenv from "dotenv";
 import path from "path";
@@ -52,7 +52,14 @@ const initDB = async () => {
 };
 
 initDB();
-app.get("/", (req, res) => {
+
+// logger middleware
+const logger = (req: Request, res: Response, next: NextFunction) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}\n`);
+  next();
+};
+
+app.get("/", logger, (req, res) => {
   res.send("Hello World!");
 });
 app.post("/users", async (req: Request, res: Response) => {
@@ -277,6 +284,15 @@ app.delete("/todos/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete todo" });
   }
 });
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+    path: req.path,
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
