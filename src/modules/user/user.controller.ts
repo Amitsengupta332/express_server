@@ -3,10 +3,8 @@ import { pool } from "../../config/db";
 import { userServices } from "./user.service";
 
 const createUser = async (req: Request, res: Response) => {
-  const { name, email } = req.body;
-
   try {
-   const result = await userServices.createUser(name, email);
+    const result = await userServices.createUser(req.body);
 
     res.status(201).json({
       success: false,
@@ -42,7 +40,6 @@ const getUser = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   // console.log(req.params.id);
   try {
-   
     const result = await userServices.getSingleUser(req.params.id as string);
 
     if (result.rows.length === 0) {
@@ -69,8 +66,11 @@ const updateUser = async (req: Request, res: Response) => {
   // console.log(req.params.id);
   const { name, email } = req.body;
   try {
-     
-    const result = await userServices.updateUser(name, email, req.params.id as string);
+    const result = await userServices.updateUser(
+      name,
+      email,
+      req.params.id as string
+    );
 
     if (result.rows.length === 0) {
       res.status(404).json({
@@ -95,7 +95,6 @@ const updateUser = async (req: Request, res: Response) => {
 const deleteUser = async (req: Request, res: Response) => {
   // console.log(req.params.id);
   try {
-     
     const result = await userServices.deleteUser(req.params.id as string);
     if (result.rowCount === 0) {
       res.status(404).json({
