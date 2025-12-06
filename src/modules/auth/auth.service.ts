@@ -18,7 +18,7 @@ const loginUser = async (email: string, password: string) => {
   if (!match) {
     return false;
   }
-
+  const secret = "KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
   const token = jwt.sign(
     { name: user.name, email: user.email, role: user.role },
     config.jwtSecret as string,
@@ -29,7 +29,6 @@ const loginUser = async (email: string, password: string) => {
 
   return { token, user };
 };
-
 
 export const authServices = {
   loginUser,
