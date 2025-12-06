@@ -3,7 +3,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
-const auth = () => {
+
+// roles = ["admin", "user"]
+const auth = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
@@ -18,11 +20,11 @@ const auth = () => {
       req.user = decoded;
 
       //["admin"]
-      //   if (roles.length && !roles.includes(decoded.role as string)) {
-      //     return res.status(500).json({
-      //       error: "unauthorized!!!",
-      //     });
-      //   }
+        if (roles.length && !roles.includes(decoded.role as string)) {
+          return res.status(500).json({
+            error: "unauthorized!!!",
+          });
+        }
 
       next();
     } catch (err: any) {
